@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'checksocket.PortConnection')
+    }
+
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+group 'com.github.lexpalych'
+version '1.0'
+
+sourceCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

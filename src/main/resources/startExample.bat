@@ -1,0 +1,1 @@
+java -jar com.github.lexpalych-1.0.jar
