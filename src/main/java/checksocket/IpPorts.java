@@ -24,7 +24,7 @@ public class IpPorts {
 
 
     public static final class IpPortsBuilder {
-        private IpPorts ipPorts;
+        private final IpPorts ipPorts;
 
         IpPortsBuilder() {
             ipPorts = new IpPorts();

@@ -9,9 +9,9 @@ import java.net.SocketException;
 import static java.lang.Integer.parseInt;
 
 public class SocketThread implements Runnable {
-    private String ip;
-    private String port;
-    private FileWriter outputFile;
+    private final String ip;
+    private final String port;
+    private final FileWriter outputFile;
 
     public SocketThread(String ip, String port, FileWriter outputFile) {
         this.ip = ip;
