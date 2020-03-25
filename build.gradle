@@ -17,10 +17,15 @@ jar {
 group 'com.github.lexpalych'
 version '1.0'
 
-sourceCompatibility = 13
+sourceCompatibility = 8
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    implementation "com.typesafe:config:${typesafeConfigVersion}"
+    implementation "org.apache.poi:poi-ooxml:${apachePoi}"
 }
 
 tasks.withType(JavaCompile) {
