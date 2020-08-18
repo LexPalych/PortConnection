@@ -31,18 +31,20 @@ public final class ExcelFileCreator {
     public static void createExcelReport(List<IpPorts> ipPortsList) throws IOException {
         String excelTableFileName = CONFIG.getString("ExcelTableFileName");
 
-        //Установка размера крайней левой колонки
+        //Установка размера колонок
         SHEET.setColumnWidth(0, 5000);
+        SHEET.setColumnWidth(1, 5000);
 
         //Создание информационной строки
         Row infoRow = SHEET.createRow(0);
 
         //Заполнение информационной строки
-        createCell(infoRow, 0, "IP", IndexedColors.LIGHT_BLUE);
-        createCell(infoRow, 1, "Succeed", IndexedColors.BRIGHT_GREEN);
-        createCell(infoRow, 2, "Fail", IndexedColors.CORAL);
-        createCell(infoRow, 3, "Timeout", IndexedColors.ORANGE);
-        createCell(infoRow, 4, "Exception", IndexedColors.LIGHT_ORANGE);
+        createCell(infoRow, 0, "Описание", Colors.DESCRIPTION);
+        createCell(infoRow, 0, "IP", Colors.IP);
+        createCell(infoRow, 1, "Succeed", Colors.SUCCEED);
+        createCell(infoRow, 2, "Fail", Colors.FAIL);
+        createCell(infoRow, 3, "Timeout", Colors.TIMEOUT);
+        createCell(infoRow, 4, "Exception", Colors.EXCEPTION);
 
         //Создание таблицы с результатами доступности портов
         createConnectionResultTable(ipPortsList);
@@ -59,11 +61,11 @@ public final class ExcelFileCreator {
      * @param row - строка
      * @param cellNumber - номер яцейки в строке
      * @param value - значение ячейки
-     * @param indexedColors - цвет ячейки
+     * @param colors - цвет ячейки
      */
-    private static void createCell(Row row, int cellNumber, String value, IndexedColors indexedColors) {
+    private static void createCell(Row row, int cellNumber, String value, Colors colors) {
         CellStyle cellStyle = getDefaultCellStyle();
-        cellStyle.setFillForegroundColor(indexedColors.getIndex());
+        cellStyle.setFillForegroundColor(colors.getColor().getIndex());
 
         Cell cell = row.createCell(cellNumber);
         cell.setCellValue(value);
@@ -80,8 +82,11 @@ public final class ExcelFileCreator {
         for (IpPorts ipPorts : ipPortsList) {
             Row row = SHEET.createRow(rowNumber++);
 
+            String description = ipPorts.getDescription();
             String ip = ipPorts.getIp();
-            createCell(row, 0, ip, IndexedColors.LIGHT_BLUE);
+
+            createCell(row, 0, description, Colors.DESCRIPTION);
+            createCell(row, 1, ip, Colors.IP);
 
             List<String> portList = ipPorts.getPortList();
 
@@ -98,7 +103,7 @@ public final class ExcelFileCreator {
      * @param port - порт
      * @return - возвращает цвет ячейки
      */
-    private static IndexedColors getCellColor(String ip, String port) throws IOException {
+    private static Colors getCellColor(String ip, String port) throws IOException {
         String outputFileName = CONFIG.getString("outputFileName");
 
         String resultLine = Files
@@ -111,19 +116,19 @@ public final class ExcelFileCreator {
 
         switch (result) {
             case "Succeed": {
-                return IndexedColors.BRIGHT_GREEN;
+                return Colors.SUCCEED;
             }
 
             case "Fail": {
-                return IndexedColors.CORAL;
+                return Colors.FAIL;
             }
 
             case "Fail with timeout": {
-                return IndexedColors.ORANGE;
+                return Colors.TIMEOUT;
             }
 
             default: {
-                return IndexedColors.LIGHT_ORANGE;
+                return Colors.EXCEPTION;
             }
         }
     }
@@ -143,5 +148,24 @@ public final class ExcelFileCreator {
         cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         return cellStyle;
+    }
+
+    private enum Colors {
+        DESCRIPTION(IndexedColors.SKY_BLUE),
+        IP(IndexedColors.LIGHT_BLUE),
+        SUCCEED(IndexedColors.BRIGHT_GREEN),
+        FAIL(IndexedColors.CORAL),
+        TIMEOUT(IndexedColors.ORANGE),
+        EXCEPTION(IndexedColors.LIGHT_ORANGE);
+
+        public final IndexedColors indexedColors;
+
+        Colors(IndexedColors indexedColors) {
+            this.indexedColors = indexedColors;
+        }
+
+        public IndexedColors getColor() {
+            return indexedColors;
+        }
     }
 }

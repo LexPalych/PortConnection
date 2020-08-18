@@ -18,30 +18,43 @@ public final class PortConnection {
         String inputFileName = CONFIG.getString("inputFileName");
         String outputFileName = CONFIG.getString("outputFileName");
 
+        //Создание выходного файла с удалением содержимого
         FileWriter outputFile = new FileWriter(outputFileName, false);
 
+        //Создание списка потоков
         List<Thread> threadList = new ArrayList<>();
+
+        //Получение списка IP и портов к нему из входного файла
         List<IpPorts> ipPortsList = getIpPortsList(inputFileName);
 
+        //Пробег по всем комбинациям IP-порт
         for (IpPorts ipPorts : ipPortsList) {
             String ip = ipPorts.getIp();
             List<String> portList = ipPorts.getPortList();
 
             for (String port : portList) {
+                //Под каждую проверку доступа создаётся отдельный поток и добавляется в список
                 threadList.add(new Thread(new SocketThread(ip, port, outputFile)));
             }
         }
 
+        //Запуск всех потоков
         for (Thread thread : threadList) {
             thread.start();
         }
 
+        //Ожидание окончания каждого потока
         for (Thread thread : threadList) {
             thread.join();
         }
 
+        //Закрытие выходного файла
         outputFile.close();
+
+        //Сортировка строк в выходном файле
         sortByIp(outputFileName);
+
+        //Создание экселевского документа с результатами проверки доступности портов
         createExcelReport(ipPortsList);
     }
 }

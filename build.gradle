@@ -14,7 +14,7 @@ jar {
     }
 }
 
-group 'com.github.lexpalych'
+group 'com.github.lexshcherbinin'
 version '1.0'
 
 sourceCompatibility = 8
