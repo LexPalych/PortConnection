@@ -40,11 +40,11 @@ public final class ExcelFileCreator {
 
         //Заполнение информационной строки
         createCell(infoRow, 0, "Описание", Colors.DESCRIPTION);
-        createCell(infoRow, 0, "IP", Colors.IP);
-        createCell(infoRow, 1, "Succeed", Colors.SUCCEED);
-        createCell(infoRow, 2, "Fail", Colors.FAIL);
-        createCell(infoRow, 3, "Timeout", Colors.TIMEOUT);
-        createCell(infoRow, 4, "Exception", Colors.EXCEPTION);
+        createCell(infoRow, 1, "IP", Colors.IP);
+        createCell(infoRow, 2, "Succeed", Colors.SUCCEED);
+        createCell(infoRow, 3, "Fail", Colors.FAIL);
+        createCell(infoRow, 4, "Timeout", Colors.TIMEOUT);
+        createCell(infoRow, 5, "Exception", Colors.EXCEPTION);
 
         //Создание таблицы с результатами доступности портов
         createConnectionResultTable(ipPortsList);

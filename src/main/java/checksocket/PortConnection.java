@@ -4,25 +4,25 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static checksocket.PortReader.getIpPortsList;
 import static checksocket.PortReader.sortByIp;
 import static checksocket.ExcelFileCreator.createExcelReport;
+import static checksocket.CheckConnection.checkConnectionThread;
 
 public final class PortConnection {
-    private static final Config CONFIG = ConfigFactory.load();
-
     public static void main(String[] args) throws IOException, InterruptedException {
-        String inputFileName = CONFIG.getString("inputFileName");
-        String outputFileName = CONFIG.getString("outputFileName");
+        Config config = ConfigFactory.load();
+        String inputFileName = config.getString("inputFileName");
+        String outputFileName = config.getString("outputFileName");
 
         //Создание выходного файла с удалением содержимого
         FileWriter outputFile = new FileWriter(outputFileName, false);
 
         //Создание списка потоков
-        List<Thread> threadList = new ArrayList<>();
+        List<Thread> threadList = new LinkedList<>();
 
         //Получение списка IP и портов к нему из входного файла
         List<IpPorts> ipPortsList = getIpPortsList(inputFileName);
@@ -34,7 +34,7 @@ public final class PortConnection {
 
             for (String port : portList) {
                 //Под каждую проверку доступа создаётся отдельный поток и добавляется в список
-                threadList.add(new Thread(new SocketThread(ip, port, outputFile)));
+                threadList.add(new Thread(checkConnectionThread(ip, port, outputFile)));
             }
         }
 
