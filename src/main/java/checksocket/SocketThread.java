@@ -24,7 +24,10 @@ public class SocketThread implements Runnable {
         final String resultConnection = checkConnection(ip, port);
 
         try {
+            //Запись в файл
             outputFile.write("telnet " + ";" + ip + " ;" + port + " ;" + resultConnection + "\r\n");
+
+            //Запись в консоль
             System.out.printf("telnet %-16s %-6s %s\n", ip, port, resultConnection);
 
         } catch (IOException e) {
@@ -32,6 +35,12 @@ public class SocketThread implements Runnable {
         }
     }
 
+    /**
+     * Проверяет доступность порта
+     * @param ip - IP
+     * @param port - порт
+     * @return - возвращает результат попытки соединения
+     */
     private static String checkConnection(final String ip, final String port) {
         final String succeed = "Succeed";
         final String fail = "Fail";
